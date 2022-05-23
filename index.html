@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16.3.1 - Na vypracovanie</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment-with-locales.min.js" 
+    integrity="sha512-vFABRuf5oGUaztndx4KoAEUVQnOvAIFs59y4tO0DILGWhQiFnFHiR+ZJfxLDyJlXgeut9Z07Svuvm+1Jv89w5g==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 600;
+        }
+        body 
+        {
+            height: 100vh;
+            background: linear-gradient(#1852f0 50%, #16181e 50%);
+        }
+        .container 
+        {
+            width: 90vW;
+            max-width: 37.5em;
+            background-color:#242831 ;
+            padding: 6em 3em;
+            position: absolute;
+            transform: translate(-50%,-50%);
+            top: 50%;
+            left: 50%;
+        }
+        .inp-wrapper 
+        {
+            display: flex;
+            justify-content: space-around;
+            gap: 1.2em;
+        }
+
+        label
+        {
+            color: #d5d5d5;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        input[type="date"]
+        {
+            font-size: 16px;
+            padding: 1em;
+            color: #242831;
+            letter-spacing: 0.14em;
+            border: none;
+            outline: none;
+            border-radius: 0.2em;
+            margin-top: 0.6em;
+        }
+        ::-webkit-calendar-picker-indicator
+        {
+            background-color: #1852f0b7;
+            padding: 0.4em;
+            cursor: pointer;
+            border-radius: 0.1em;
+        }
+        button
+        {
+            display: block;
+            background-color: #1852f0;
+            color: #ffffff;
+            font-size: 18px;
+            margin: 1em auto 2em auto;
+            border: none;
+            padding: 0.7em 2em;
+            border-radius: 0.3em;
+            cursor: 0;
+        }
+        button:hover
+        {
+            background-color: #1545c7;
+        }
+        #vypis
+        {
+            background-color: rgba(255, 255, 255, 0.15);
+            text-align: center;
+            padding: 1em;
+            color: #ffffff;
+            font-size: 1.2em;
+            letter-spacing: 0.1em;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="inp-wrapper">
+            <div class="date-wrapper">
+                <label for="date">16.3.1 - Na vypracovanie</label>
+                <input type="date" id="date"/>
+            </div>
+        </div>
+        <button id="submit" onclick="spocitajDni();">Vypočitaj</button>
+        <div id="vypis">Zadaj dátum narodenia a program ti <br> vypočíta koľko dní ti ostáva do narodenin</div>
+    </div>
+    
+    
+    <script>
+        // variable 
+        let vypis = document.getElementById('vypis');
+        let month;
+        let rocneObdobie;
+        let date;
+        let dateS;
+        let dateSe;
+        let dateE;
+        let overYear;
+        
+        // function
+        function  spocitajDni(){
+            // set moment location
+            moment.locale('sk');
+            //initialization variable 
+            dateE = document.getElementById('date').value; // initialized variable input data from date picker
+            dateEs = moment(dateE).format('l'); // format input
+            
+            // function for change year
+            function changeYear(dateE){
+                dateEs = dateEs.split('.');
+                dateEs[2] = 2022;
+                month = dateEs[1];
+                dateEs = dateEs.join('.'); 
+               
+            }
+             
+            changeYear(dateE);
+
+            dateS = moment();                           // initializing today data variable
+            dateComp = moment(dateS).format('l');       // formating to comparasion
+            output=dateS.diff(dateE,'days');            // day difference calculation
+            output=Math.abs(output)+1;                  // +1
+            overYear= 365 - output+1;
+            
+            // call function obdobie 
+            obdobie(month);                     
+            
+            // condition for the season
+            function obdobie(month){
+                if ( month>=3 && month<= 5 ){
+                    rocneObdobie = 'jari';
+                }
+                else if ( month>=6 && month<= 8){
+                    rocneObdobie = 'lete';
+                }
+                else if ( month>=9 && month<= 11){
+                    rocneObdobie = 'jeseni';
+                }
+                else
+                {
+                    rocneObdobie = 'zime';
+                }
+            }
+
+            // output to html
+
+
+            if (dateE == ""){
+                vypis.innerHTML = '<p>' + 'nezadal si datum' + '</p>';
+            }
+            else {
+                if(dateEs === dateComp){
+                    vypis.innerHTML = '<p>' + 'Dnes mas narodeniny '+ ' <br> je to v ' +rocneObdobie+ '</p>';
+                }             
+                else if (dateComp<dateEs){
+                    vypis.innerHTML = '<p> je '+  output + ' dni do tvojich narodenin '+ ' <br> bude to v ' +rocneObdobie+ '</p>';
+                }
+                else if (dateComp>dateEs){
+                    vypis.innerHTML = '<p> uz si tohto roku narodeniny mal a je '+  overYear + ' dni do tvojich narodenin v nasledujucom roku'+ ' <br> bude to v ' +rocneObdobie+ '</p>';
+                }
+            }
+
+        }
+    </script>
+    
+</body>
+</html>
